@@ -16,4 +16,10 @@ public class CustomExceptionHandler {
         return ResponseDto.toResponseEntity(e);
     }
 
+    @ExceptionHandler(value = {Exception.class})
+    protected ResponseEntity<Object> handleSomeException(Exception e){
+        log.error("handleCustomException throw CustomException : {}", e.getMessage());
+        return ResponseDto.toResponseEntity(e);
+    }
+
 }

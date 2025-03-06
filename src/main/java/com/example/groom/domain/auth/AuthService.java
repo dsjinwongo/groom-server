@@ -3,11 +3,12 @@ package com.example.groom.domain.auth;
 
 import com.example.groom.common.auth.jwt.AuthenticationToken;
 import com.example.groom.common.auth.jwt.AuthenticationTokenProvider;
-import com.example.groom.domain.auth.RefreshToken.RefreshTokenService;
-import com.example.groom.domain.auth.UserInfo.UserInfoService;
-import com.example.groom.entity.UserInfo;
+import com.example.groom.common.auth.jwt.JwtAuthentication;
+import com.example.groom.domain.auth.refreshToken.RefreshTokenService;
+import com.example.groom.domain.auth.userInfo.UserInfoService;
+import com.example.groom.domain.auth.userInfo.dto.UserInfoRoomDto;
+import com.example.groom.entity.domain.auth.UserInfo;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,13 +26,15 @@ public class AuthService {
     }
 
 
-    public AuthenticationToken login(String kakaoCode){
+    public AuthenticationToken login(String kakaoCode) {
         UserInfo userInfo = this.kakaoService.getUserInfoByKakaoAccessToken(kakaoCode);
-        return this.authenticationTokenProvider.issue(userInfo.getId());
+        AuthenticationToken issuedToken = this.authenticationTokenProvider.issue(userInfo.getId());
+        this.refreshTokenService.assignRefreshToken(issuedToken.getRefreshToken(), userInfo);
+        return issuedToken;
     }
 
-    public UserInfo getMe(Authentication authentication){
-        return this.userInfoService.getUserInfo((Long) authentication.getDetails());
+    public UserInfoRoomDto getMe(JwtAuthentication authentication) {
+        return UserInfoRoomDto.of(this.userInfoService.getUserInfo(authentication.getPrincipal()));
     }
 
 }

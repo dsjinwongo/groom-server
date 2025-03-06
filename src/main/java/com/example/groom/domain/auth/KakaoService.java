@@ -3,11 +3,11 @@ package com.example.groom.domain.auth;
 
 import com.example.groom.common.exception.CustomException;
 import com.example.groom.common.exception.ErrorCode;
-import com.example.groom.domain.auth.UserInfo.UserInfoService;
 import com.example.groom.domain.auth.dto.KakaoTokenDto;
 import com.example.groom.domain.auth.dto.KakaoTokenValidationDto;
-import com.example.groom.entity.KakaoInfo;
-import com.example.groom.entity.UserInfo;
+import com.example.groom.domain.auth.userInfo.UserInfoService;
+import com.example.groom.entity.domain.auth.KakaoInfo;
+import com.example.groom.entity.domain.auth.UserInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -64,7 +64,7 @@ public class KakaoService {
     private KakaoTokenDto getKakaoToken(String kakaoCode){
         RestTemplate template = new RestTemplate();
         HttpHeaders headers = getHeader(MediaType.APPLICATION_FORM_URLENCODED);
-        HttpEntity<MultiValueMap> entity = new HttpEntity<>(headers);
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(headers);
         ResponseEntity<KakaoTokenDto> exchange = template.exchange("https://kauth.kakao.com/oauth/token"+getTokenUriParams(kakaoCode), HttpMethod.POST, entity, KakaoTokenDto.class);
         return exchange.getBody();
     }

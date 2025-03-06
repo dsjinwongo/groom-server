@@ -17,7 +17,6 @@ public class JwtAuthenticationTokenProvider implements AuthenticationTokenProvid
 
     private final SecretKey accessKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
-
     private final SecretKey refreshKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     @Value("${jwt.access.expirationMs}")
